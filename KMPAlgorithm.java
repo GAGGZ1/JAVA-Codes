@@ -77,3 +77,40 @@ public class KMPAlgorithm {
         KMPSearch(text, pattern);
     }
 }
+
+// Algo:
+// LPS Table Construction
+    // Initialize Variables:
+
+        // i <- 0 (pointer for prefix).
+        // j <- 1 (pointer for suffix).
+        // LLP[0] <- 0 (LPS value of the first character is always 0).
+
+    // Iterate Through the Pattern:
+
+        // While j < length of the pattern:
+        // Case 1: Match:
+            // If pattern[i] == pattern[j], set LLP[j] = i + 1.
+            // Increment both i and j.
+        // Case 2: Mismatch:
+            // If pattern[i] != pattern[j]:
+                // If i != 0, update i = LLP[i - 1] (go to the previous longest prefix).
+                // Else, set LLP[j] = 0 and increment j.
+
+// KMP Algorithm (Pattern Matching)
+    // Initialize Variables:
+
+        // x <- 0 (index for the string).
+        // y <- 0 (index for the pattern).
+        // len <- length of the string.
+
+    // Iterate Through the String:
+
+        // While x < len:
+            // Case 1: Match:
+                // If string[x] == pattern[y], increment both x and y.
+                // If y == length of the pattern, a match is found. Print or store the match index x - y and update y = LLP[y - 1].
+            // Case 2: Mismatch:
+                // If string[x] != pattern[y]:
+                    // If y != 0, update y = LLP[y - 1].
+                    // Else, increment x.
