@@ -96,3 +96,89 @@ public class KruskalsAlgorithm {
         scanner.close();
     }
 }
+// ========================= CODING NINJA =========================
+// ========              ===========        =============
+import java.util.*;
+
+class Edge implements Comparable<Edge> {
+    int source, destination, weight;
+
+    Edge(int source, int destination, int weight) {
+        this.source = source;
+        this.destination = destination;
+        this.weight = weight;
+    }
+
+    @Override
+    public int compareTo(Edge other) {
+        return this.weight - other.weight;
+    }
+}
+
+public class Solution {
+
+    static int findParent(int vertex, int[] parent) {
+        if (parent[vertex] != vertex) {
+            parent[vertex] = findParent(parent[vertex], parent); // Path compression
+        }
+        return parent[vertex];
+    }
+
+    static void union(int x, int y, int[] parent, int[] rank) {
+        int rootX = findParent(x, parent);
+        int rootY = findParent(y, parent);
+
+        if (rootX != rootY) {
+            if (rank[rootX] > rank[rootY]) {
+                parent[rootY] = rootX;
+            } else if (rank[rootX] < rank[rootY]) {
+                parent[rootX] = rootY;
+            } else {
+                parent[rootY] = rootX;
+                rank[rootX]++;
+            }
+        }
+    }
+
+    public static int minimumSpanningTree(ArrayList<ArrayList<Integer>> edges, int n) {
+        List<Edge> edgeList = new ArrayList<>();
+        
+        // Convert input to edge objects
+        for (ArrayList<Integer> edge : edges) {
+            edgeList.add(new Edge(edge.get(0), edge.get(1), edge.get(2)));
+        }
+        
+        // Sort edges by weight
+        Collections.sort(edgeList);
+
+        int[] parent = new int[n];
+        int[] rank = new int[n];
+
+        // Initialize disjoint set
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+
+        int mstWeight = 0;
+        int edgeCount = 0;
+
+        // Process edges to build MST
+        for (Edge edge : edgeList) {
+            int rootSource = findParent(edge.source, parent);
+            int rootDestination = findParent(edge.destination, parent);
+
+            if (rootSource != rootDestination) {
+                mstWeight += edge.weight;
+                edgeCount++;
+                union(rootSource, rootDestination, parent, rank);
+
+                // Stop if we have n-1 edges in the MST
+                if (edgeCount == n - 1) break;
+            }
+        }
+
+        return mstWeight;
+    }
+}
+
